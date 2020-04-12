@@ -1,23 +1,21 @@
 def main():
 
-    transition_table = [{"letra": 1, "digit": 3, " ": 0, "\n": 0},
-                        {"letra": 1, "digit": 1, " ": 2, "\n": 2},
+    transition_table = [{"letra": 1, "digit": 2, " ": 3, "\n": 3, ";": 3},
+                        {"letra": 1, "digit": 1, " ": 3, "\n": 3, ";": 3},
+                        {"letra": 4, "digit": 2, " ": 3, "\n": 3, ";": 3},
                         {},
                         {}]
     list_tokens = []
 
     f = open("program.txt", "r")
     text = f.read()
+    text += " "
     state = 0
     index = 0
     token = ""
     error_token = ""
-    while index <= len(text):
-        if state != 2 and state != 3:
-            if (text[index] == " "):
-                print("espacio")
-            if (text[index] == "\n"):
-                print("espacio doble")
+    while index < len(text):
+        if state != 3 and state != 4:
             if text[index].isalpha():
                 state = transition_table[state]["letra"]
                 print("letra ", state, " - ", text[index])
@@ -28,16 +26,20 @@ def main():
                 token += text[index]
             else:
                 state = transition_table[state][text[index]]
-                print("other ", state, " - ", text[index])
-        elif state == 2:
-            print("AÑADIDO A LA LISTA de TOKENS - ", token)
-            print("STATE = 0")
-            list_tokens.append(token)
+
+        if state == 3:
+            if token != "":
+                print("AÑADIDO A LA LISTA de TOKENS - ",
+                      token, " - ", len(token))
+                print("STATE = 0")
+                list_tokens.append(token)
+            if text[index] != " " and text[index] != "\n":
+                print("DELIMITER ", state, " - ", text[index])
+                list_tokens.append(text[index])
             token = ""
             state = 0
-            if index != len(text):
-                index = index - 1
-        elif state == 3:
+
+        if state == 4:
             error_token += token
             while text[index] != " " and text[index] != "\n":
                 error_token += text[index]
@@ -46,6 +48,7 @@ def main():
             index = len(text)+1
         print("----------", index)
         index += 1
+    print(list_tokens)
 
 
 if __name__ == '__main__':
