@@ -1,11 +1,9 @@
 def main():
-    # transition_table = [["1", "2", "3"],
-    #                     [-5, 8, 9]]
 
-    list = [{"letra": 1, "digit": 3, " ": 0, "/n": 0},
-            {"letra": 1, "digit": 1, "other": 2, " ": 2, "/n": 2},
-            {"letra": 3, "digit": 3, "other": 3},
-            {"letra": 3, "digit": 3, "other": 3}]
+    transition_table = [{"letra": 1, "digit": 3, " ": 0, "\n": 0},
+                        {"letra": 1, "digit": 1, " ": 2, "\n": 2},
+                        {},
+                        {}]
     list_tokens = []
 
     f = open("program.txt", "r")
@@ -13,7 +11,7 @@ def main():
     state = 0
     index = 0
     token = ""
-    error_token = 2
+    error_token = ""
     while index <= len(text):
         if state != 2 and state != 3:
             if (text[index] == " "):
@@ -21,25 +19,30 @@ def main():
             if (text[index] == "\n"):
                 print("espacio doble")
             if text[index].isalpha():
-                state = list[state]["letra"]
+                state = transition_table[state]["letra"]
                 print("letra ", state, " - ", text[index])
                 token += text[index]
             elif text[index].isdigit():
-                state = list[state]["digit"]
+                state = transition_table[state]["digit"]
                 print("digit ", state, " - ", text[index])
                 token += text[index]
             else:
-                state = list[state][text[index]]
+                state = transition_table[state][text[index]]
                 print("other ", state, " - ", text[index])
         elif state == 2:
-            print("AÑADIDO A LA LISTA - ", token)
+            print("AÑADIDO A LA LISTA de TOKENS - ", token)
+            print("STATE = 0")
             list_tokens.append(token)
             token = ""
             state = 0
             if index != len(text):
                 index = index - 1
         elif state == 3:
-            print("Error - ", token)
+            error_token += token
+            while text[index] != " " and text[index] != "\n":
+                error_token += text[index]
+                index += 1
+            print("Error - Invalid Token", error_token)
             index = len(text)+1
         print("----------", index)
         index += 1
