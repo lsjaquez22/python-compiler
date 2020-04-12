@@ -10,6 +10,9 @@ def main():
                         {}]
     list_tokens = []
 
+    reserved_words = ["if", "else", "int", "return",
+                      "void", "while", "input", "output"]
+
     f = open("program.txt", "r")
     text = f.read()
     text += " "
@@ -18,6 +21,7 @@ def main():
     token = ""
     delimitador = ""
     error_token = ""
+    print(len(text))
     while index < len(text):
         if state != 3 and state != 4:
             if text[index].isalpha():
@@ -33,6 +37,8 @@ def main():
 
         if state == 3:
             if token != "":
+                if token in reserved_words:
+                    print("PALABRA RESERVADA ENCONTRADA")
                 print("AÑADIDO A LA LISTA de TOKENS - ",
                       token, " - ", len(token))
                 print("STATE = 0")
@@ -48,8 +54,27 @@ def main():
                 if delimitador == "=" and text[index + 1] == "=":
                     delimitador += "="
                     index += 1
+                if delimitador == "/" and text[index + 1] == "*":
+                    # print("FOUND COMMENT ", delimitador,
+                    #       " - ", text[index + 1])
+                    delimitador += "*"
+                    index += 3
+                    found = False
+
+                    while index < len(text) and found == False:
+                        if text[index] == "/":
+                            if text[index - 1] == "*":
+                                print("Valor - ", text[index],
+                                      " - ", text[index - 1])
+                                found = True
+                                index -= 1
+                        else:
+                            print("Valor - ", text[index], " - ", index)
+
+                        index += 1
                 print("DELIMITER ", state, " - ", delimitador)
                 list_tokens.append(delimitador)
+
             token = ""
             state = 0
             if delimitador == "!" and text[index + 1] == "=":
