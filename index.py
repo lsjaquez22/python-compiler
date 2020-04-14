@@ -37,6 +37,8 @@ def main():
                       "void", "while", "input", "output"]
 
     data = {"status": 0, "message": "se leyeron los tokens de forma correcta"}
+    symbol_table_identifiers = []
+    symbol_table_numbers = []
 
     f = open("program.txt", "r")
     text = f.read()
@@ -44,8 +46,6 @@ def main():
     state = 0
     index = 0
     token = ""
-    delimitador = ""
-    error_token = ""
     print(len(text))
     while index < len(text):
         if state != 3 and state != 7:
@@ -73,11 +73,15 @@ def main():
                     new_token = {"tipo": token, "value": None}
                     list_tokens.append(new_token)
                 else:
-                    new_token = {"tipo": "identifier", "value": token}
+                    symbol_table_identifiers.append({"lexema": token})
+                    new_token = {"tipo": "identifier",
+                                 "value": len(symbol_table_identifiers)-1}
                     list_tokens.append(new_token)
             elif token != " " and token != "\n":
                 if token.isdigit():
-                    new_token = {"tipo": "number", "value": token}
+                    symbol_table_numbers.append({"lexema": token})
+                    new_token = {"tipo": "number",
+                                 "value": len(symbol_table_numbers)-1}
                     list_tokens.append(new_token)
                 else:
                     new_token = {"tipo": "symbol", "value": token}
@@ -103,8 +107,7 @@ def main():
 
         if state == 7:
             data["status"] = 1
-            data["message"] = ("token incorrecto - --- ", token)
-            print("--------ERROR------ token incorrecto ---- ", token)
+            data["message"] = ("token incorrecto ---- ", token)
             index = len(text)
 
         if state == 18:
@@ -116,10 +119,34 @@ def main():
     if state == 5 or state == 6:
         data["status"] = 2
         data["message"] = "Commentario sin cerradura ----"
-        print("--------ERROR------ Commentario sin cerradura ---- ")
 
-    for element in list_tokens:
-        print(element)
+    if (data["status"] == 0):
+        data["list_tokens"] = list_tokens
+        data["list_identifiers"] = symbol_table_identifiers
+        data["list_numbers"] = symbol_table_numbers
+        print("\n")
+        print("Status - ", data["status"])
+        print("\n")
+        print("Message - ", data["message"])
+        print("\n")
+        print("LISTA DE TOKENS")
+        for element in data["list_tokens"]:
+            print(element)
+        print("\n")
+        print("LISTA DE IDENTIFICADORES")
+        for element in data["list_identifiers"]:
+            print(element)
+        print("\n")
+        print("LISTA DE NUMEROS")
+        for element in data["list_numbers"]:
+            print(element)
+        print("\n")
+    else:
+        print("\n")
+        print("Status - ", data["status"])
+        print("\n")
+        print("Mensaje - ", data["message"])
+        print("\n")
 
 
 if __name__ == '__main__':
