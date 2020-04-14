@@ -1,6 +1,6 @@
 def main():
 
-    transition_table = [{"letra": 1, "digit": 2, " ": 11, "\n": 11, ";": 11, ",": 11, "+": 11, "-": 11, "*": 11, "/": 4, "<": 14, ">": 16,"=": 8, "(": 11, ")": 11, "{": 11, "}": 11, "[": 11, "]": 11, "!": 12},
+    transition_table = [{"letra": 1, "digit": 2, " ": 11, "\n": 11, ";": 11, ",": 11, "+": 11, "-": 11, "*": 11, "/": 4, "<": 14, ">": 16, "=": 8, "(": 11, ")": 11, "{": 11, "}": 11, "[": 11, "]": 11, "!": 12},
                         {"letra": 1, "digit": 7, " ": 3, "\n": 3, ";": 3, ",": 3, "+": 3, "-": 3, "*": 3, "/": 3,
                             "<": 3, ">": 3, "=": 3, "(": 3, ")": 3, "{": 3, "}": 3, "[": 3, "]": 3, "!": 3},
                         {"letra": 7, "digit": 2, " ": 3,
@@ -10,8 +10,8 @@ def main():
                             "<": 10, ">": 10, "=": 10, "(": 10, ")": 10, "{": 10, "}": 10, "[": 10, "]": 10, "!": 10},
                         {"letra": 5, "digit": 5, " ": 5, "\n": 5, ";": 5, ",": 5, "+": 5, "-": 5, "*": 6, "/": 5,
                             "<": 5, ">": 5, "=": 5, "(": 5, ")": 5, "{": 5, "}": 5, "[": 5, "]": 5, "!": 5},
-                        {"letra": 7, "digit": 7, " ": 7, "\n": 7, ";": 7, ",": 7, "+": 7, "-": 7, "*": 7,
-                            "/": 11, "<": 7, ">": 7, "=": 7, "(": 7, ")": 7, "{": 7, "}": 7, "[": 7, "]": 7, "!": 7},
+                        {"letra": 6, "digit": 6, " ": 6, "\n": 6, ";": 6, ",": 6, "+": 6, "-": 6, "*": 6,
+                            "/": 18, "<": 6, ">": 6, "=": 6, "(": 6, ")": 6, "{": 6, "}": 6, "[": 6, "]": 6, "!": 6},
                         {},
                         {"letra": 3, "digit": 3, " ": 3, "\n": 3, ";": 3, ",": 3, "+": 3, "-": 3, "*": 3, "/": 3,
                             "<": 3, ">": 3, "=": 9, "(": 3, ")": 3, "{": 3, "}": 3, "[": 3, "]": 3, "!": 3},
@@ -35,6 +35,8 @@ def main():
 
     reserved_words = ["if", "else", "int", "return",
                       "void", "while", "input", "output"]
+
+    data = {"status": 0, "message": "se leyeron los tokens de forma correcta"}
 
     f = open("program.txt", "r")
     text = f.read()
@@ -65,31 +67,59 @@ def main():
             token = token[:-1]
             index = index-1
             print("TOKEN ENCONTRADO - ", token)
-            if token != " " and token != "\n":
-                list_tokens.append(token)
+            if token.isalpha():
+                if token in reserved_words:
+                    print("Palabra reservada encontrada")
+                    new_token = {"tipo": token, "value": None}
+                    list_tokens.append(new_token)
+                else:
+                    new_token = {"tipo": "identifier", "value": token}
+                    list_tokens.append(new_token)
+            elif token != " " and token != "\n":
+                if token.isdigit():
+                    new_token = {"tipo": "number", "value": token}
+                    list_tokens.append(new_token)
+                else:
+                    new_token = {"tipo": "symbol", "value": token}
+                    list_tokens.append(new_token)
             token = ""
             state = 0
         if state == 10:
             token = token[:-1]
             print("TOKEN ENCONTRADO 10 - ", token)
             if token != " " and token != "\n":
-                list_tokens.append(token)
+                new_token = {"tipo": "symbol", "value": token}
+                list_tokens.append(new_token)
             token = ""
             state = 0
             index = index-1
         if state == 11:
             print("TOKEN ENCONTRADO 11 - ", token)
             if token != " " and token != "\n":
-                list_tokens.append(token)
+                new_token = {"tipo": "symbol", "value": token}
+                list_tokens.append(new_token)
             token = ""
             state = 0
 
         if state == 7:
-            print("ERROR")
+            data["status"] = 1
+            data["message"] = ("token incorrecto - --- ", token)
+            print("--------ERROR------ token incorrecto ---- ", token)
             index = len(text)
+
+        if state == 18:
+            print("Comentario encontrado")
+            token = ""
+            state = 0
         print("----------", index, "----------", state)
         index += 1
-    print(list_tokens)
+    if state == 5 or state == 6:
+        data["status"] = 2
+        data["message"] = "Commentario sin cerradura ----"
+        print("--------ERROR------ Commentario sin cerradura ---- ")
+
+    for element in list_tokens:
+        print(element)
 
 
 if __name__ == '__main__':
