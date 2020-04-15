@@ -49,7 +49,7 @@ def main():
     token = ""
     print(len(text))
     while index < len(text):
-        if state != 3 and state != 7:
+        if state != 3 and state != 7 and state != 10 and state != 11 and state != 18:
 
             if text[index].isalpha():
                 state = transition_table[state]["letra"]
