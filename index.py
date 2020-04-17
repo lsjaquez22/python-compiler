@@ -34,6 +34,8 @@ def main():
                         {}]
     list_tokens = []
 
+    symbol_table_identifiers = []
+    symbol_table_numbers = []
     reserved_words = ["if", "else", "int", "return",
                       "void", "while", "input", "output"]
 
