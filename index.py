@@ -205,9 +205,9 @@ if __name__ == '__main__':
     data = analizados_lexico()
     if data["status"] == 0:
         print("\n")
-        print(data["status"])
+        print("STATUS - ", data["status"])
         print("\n")
-        print(data["message"])
+        print("Message - ", data["message"])
         print("\n")
         print("LISTA DE TOKENS")
         for element in data["list_tokens"]:
