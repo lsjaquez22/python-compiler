@@ -2,7 +2,7 @@
 # muestran el flujo que sigue el programa al ir leyendo cada caracter
 
 
-def main():
+def analizados_lexico():
 
     transition_table = [{"letra": 1, "digit": 2, " ": 11, "\n": 11, ";": 11, ",": 11, "+": 11, "-": 11, "*": 11, "/": 4, "<": 14, ">": 16, "=": 8, "(": 11, ")": 11, "{": 11, "}": 11, "[": 11, "]": 11, "!": 12},
                         {"letra": 1, "digit": 7, " ": 3, "\n": 3, ";": 3, ",": 3, "+": 3, "-": 3, "*": 3, "/": 3,
@@ -197,10 +197,17 @@ def main():
         data["list_tokens"] = list_tokens
         data["list_identifiers"] = symbol_table_identifiers
         data["list_numbers"] = symbol_table_numbers
+
+    return data
+
+
+if __name__ == '__main__':
+    data = analizados_lexico()
+    if data["status"] == 0:
         print("\n")
-        print("Status - ", data["status"])
+        print(data["status"])
         print("\n")
-        print("Message - ", data["message"])
+        print(data["message"])
         print("\n")
         print("LISTA DE TOKENS")
         for element in data["list_tokens"]:
@@ -220,7 +227,3 @@ def main():
         print("\n")
         print("Mensaje - ", data["message"])
         print("\n")
-
-
-if __name__ == '__main__':
-    main()
