@@ -74,10 +74,23 @@ def main():
                     new_token = {"tipo": token, "value": None}
                     list_tokens.append(new_token)
                 else:
-                    symbol_table_identifiers.append({"lexema": token})
-                    new_token = {"tipo": "identifier",
-                                 "value": len(symbol_table_identifiers)-1}
-                    list_tokens.append(new_token)
+                    found = False
+                    pos = 0
+                    index_found_element = 0
+                    for element in symbol_table_identifiers:
+                        if element["lexema"] == token:
+                            index_found_element = pos
+                            found = True
+                        pos += 1
+                    if found == False:
+                        symbol_table_identifiers.append({"lexema": token})
+                        new_token = {"tipo": "identifier",
+                                     "value": len(symbol_table_identifiers)-1}
+                        list_tokens.append(new_token)
+                    else:
+                        new_token = {"tipo": "identifier",
+                                     "value": index_found_element}
+                        list_tokens.append(new_token)
             elif token != " " and token != "\n":
                 if token.isdigit():
                     symbol_table_numbers.append({"lexema": token})
