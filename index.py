@@ -85,6 +85,23 @@ def analizados_lexico():
                 state = transition_table[state][text[index]]
                 token += text[index]
 
+        if state == 5:
+            # Estado para manejar los comentarios
+            index += 1
+            # Se va leyendo hasta que se encuentra el simbolo de cierre del comentario
+            while text[index] != "/" or text[index - 1] != "*":
+                # en caso de que se lea todo el archivo sin encontrar el simbolo
+                # se hace un break para salir del while
+                if index == len(text) - 1:
+                    break
+                # se recorre el index para leer el siguiente caracter
+                index += 1
+            # si encontro el simbolo de cierre
+            # se borra el token y se reinicia el valor del state = 0
+            if index != len(text) - 1:
+                token = ""
+                state = 0
+
         # primer estado de aceptacion, encontro un token de palabra, numero o de mas de 2 simbolos
         if state == 3:
             # se elimia el ultimo elemento del token ya que este marco el final del token y no pertenece
