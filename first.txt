@@ -1,0 +1,48 @@
+First(declaration_list) -> {int, void}
+First(declaration_list_prime) -> {int, void,  ε}
+First(pre_declaration) -> {int, void}
+First(declaration) -> {"[", "(", ";"}
+First(var_declaration_factor) -> {"[", ε}
+First(fun_declaration_factor_void) -> {"("}
+First(fun_declaration_factor_typed) -> {"("}
+First(params)-> {int, void} 
+First(param_list)-> {int} 
+First(param_list_prime)-> {",", ε} 
+First(param)-> {int} 
+First(param_factor)-> {"[", ε} 
+First(compound_stmt_void) -> {"{"}
+First(compound_stmt_typed) -> {"{"}
+First(compound_stmt_typed_nulled) -> { ‘{’ }
+First(local_declarations) -> {int, ε}
+First(statement_list_void) -> {ID, "{", if, while, return, input, output, ε }
+First(statement_list_typed) -> {ID, "{", if, while, return, input, output, ε}
+First(statement_void) -> {ID, "{", if, while, return, input, output}
+First(statement_typed) -> { ID, "{", if, while, return, input, output }
+First(assignment_call_stmt)-> {ID}
+First(assignment_call_stmt_factor)-> {'[', '(', = }  
+First(selection_stmt_void) -> { if }
+First(selection_stmt_void_factor) -> { else, ε }
+First(selection_stmt_typed) -> { if }
+First(selection_stmt_typed_factor) -> { else, ε  }
+First(iteration_stmt_void) -> { while }
+First(iteration_stmt_typed) -> { while }
+First(return_stmt_typed) -> { return }
+First(return_stmt_void) -> { return }
+First(input_stmt) -> {input}
+First(output_stmt) -> {output}
+First(var_prime_factor) -> { "[", ε }
+First(expression) -> { "(", ID, NUM }
+First(expression_factor) -> {<= , < , > , >= , == , !=, ε }
+First(relop) -> {  <= , < , > , >= , == , != }
+First(arithmetic_expression) -> { "(", ID, NUM }
+First(arithmetic_expression_prime) -> { + , -, ε }
+First(addop) -> {+, -}
+First(term) -> { "(", ID, NUM }
+First(term_prime) -> { *, /, ε }
+First(mulop) -> {*, /}
+First(factor) -> { "(", ID, NUM }
+First(factor_ID) -> { ID }
+First(temp_factor) -> { "[", "(", ε }
+First(args) -> {"(", ID, NUM, ε}
+First(args_list) -> { "(", ID , NUM }
+First(args_list_prime) -> { "," , ε }

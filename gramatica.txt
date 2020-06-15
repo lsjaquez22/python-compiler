@@ -1,0 +1,48 @@
+declaration_list -> pre_declaration declaration_list_prime
+declaration_list_prime -> pre_declaration declaration_list_prime | ε
+pre_declaration -> int ID declaration | void ID fun_declaration_factor_void
+declaration -> var_declaration_factor ; | fun_declaration_factor_typed
+var_declaration_factor -> [NUM]  | ε 
+fun_declaration_factor_void ->  ( params ) compound_stmt_void
+fun_declaration_factor_typed -> ( params ) compound_stmt_typed
+params -> param_list | void
+param_list -> param param_list_prime
+param_list_prime -> , param param_list_prime | ε
+param -> int  ID param_factor
+param_factor ->  [ ] | ε 
+compound_stmt_void -> { local_declarations statement_list_void }
+compound_stmt_typed -> { local_declarations statement_list_typed return_stmt_typed }
+compound_stmt_typed_nulled -> { local_declarations statement_list_typed }
+local_declarations ->  int ID var_declaration_factor ; local_declarations | ε
+statement_list_void ->  statement_void statement_list_void | ε
+statement_list_typed ->  statement_typed statement_list_typed | ε
+statement_void -> assignment_call_stmt | compound_stmt_void | selection_stmt_void | iteration_stmt_void | return_stmt_void | input_stmt | output_stmt
+statement_typed -> assignment_call_stmt | compound_stmt_typed_nulled | selection_stmt_typed | iteration_stmt_typed | return_stmt_typed | input_stmt | output_stmt
+assignment_call_stmt -> ID assignment_call_stmt_factor ;
+assignment_call_stmt_factor -> var_prime_factor = expression  | ( args ) 
+selection_stmt_void -> if  ( expression )  statement_void  selection_stmt_void_factor
+selection_stmt_void_factor ->  else  statement_void  | ε 
+selection_stmt_typed -> if  ( expression )  statement_typed  selection_stmt_typed_factor
+selection_stmt_typed_factor ->  else  statement_typed  | ε 
+iteration_stmt_void -> while ( expression )  statement_void
+iteration_stmt_typed -> while ( expression )  statement_typed
+return_stmt_typed -> return expression ;
+return_stmt_void -> return ; 
+input_stmt -> input ID var_prime_factor ;
+output_stmt -> output expression ;
+var_prime_factor -> [ arithmetic_expression ] | ε 
+expression -> arithmetic_expression expression_factor
+expression_factor -> relop arithmetic_expression | ε 
+relop -> <= | < | > | >= | == | !=
+arithmetic_expression -> term arithmetic_expression_prime
+arithmetic_expression_prime -> addop term arithmetic_expression_prime | ε
+addop -> + | -
+term -> factor term_prime
+term_prime -> mulop factor term_prime | ε
+mulop -> * | /
+factor -> ( arithmetic_expression ) | factor_ID | NUM
+factor_ID ->  ID temp_factor
+temp_factor -> var_prime_factor | ( args ) 
+args -> args_list | ε
+args_list -> arithmetic_expression args_list_prime
+args_list_prime -> , arithmetic_expression args_list_prime | ε

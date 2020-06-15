@@ -1,0 +1,48 @@
+Follow(declaration_list) -> {$}
+Follow(declaration_list_prime) -> {$}
+Follow(pre_declaration) -> {int, void, $}
+Follow(declaration) -> {int, void, $}
+Follow(var_declaration_factor) -> { ; }
+Follow(fun_declaration_factor_void) -> { int, void, $ }
+Follow(fun_declaration_factor_typed) -> { int, void, $ }
+Follow(params) -> { ")" }
+Follow(param_list) -> { ")" }
+Follow(param_list_prime) -> { ")" }
+Follow(param) -> { ",", ")" }
+Follow(param_factor) -> { ",", ")" }
+Follow(compound_stmt_void) -> {  int, void, $,  ID, "{", if, while, return, input, output, "}", else}
+Follow(compound_stmt_typed) -> { int, void, $ }
+Follow(compound_stmt_typed_nulled) -> {  ID, "{", if, while, return, input, output, "}", else}
+Follow(local_declarations)  -> { ID, "{", if, while, return, input, output, "}" }
+Follow(statement_list_void) -> { "}" }
+Follow(statement_list_typed) -> { "}", return }
+Follow(statement_void)  -> { ID, "{", if, while, return, input, output, "}", else} 
+Follow(statement_typed)  -> { ID, "{", if, while, return, input, output, "}", else }
+Follow(assignment_call_stmt) -> { ID, "{", if, while, return, input, output, "}", else}
+Follow(assignment_call_stmt_factor) -> {";"}
+Follow(selection_stmt_void)  -> {  ID, "{", if, while, return, input, output, "}", else}
+Follow(selection_stmt_void_factor)  -> {  ID, "{", if, while, return, input, output, "}", else }
+Follow(selection_stmt_typed)  -> { ID, "{", if, while, return, input, output, "}", else }
+Follow(selection_stmt_typed_factor) -> {  ID, "{", if, while, return, input, output, "}", else}
+Follow(iteration_stmt_void) -> { ID, "{", if, while, return, input, output, "}", else}
+Follow(iteration_stmt_typed)  -> { ID, "{", if, while, return, input, output, "}", else  }
+Follow(return_stmt_typed)  -> { ID, "{", if, while, return, input, output, "}", else}
+Follow(return_stmt_void)  -> { ID, "{", if, while, return, input, output, "}", else }
+Follow(input_stmt)  -> {  ID, "{", if, while, return, input, output, "}", else}
+Follow(output_stmt)  -> {  ID, "{", if, while, return, input, output, "}", else}
+Follow(var_prime_factor)  -> { =, ";" , *, /, + , -, "]", <= , < , > , >= , == , !=, ")", ","  }
+Follow(expression)  -> {")", ";"  }
+Follow(expression_factor) -> { ")", ";" }
+Follow(relop) -> { "(", ID, NUM }
+Follow(arithmetic_expression)  -> { "]", <= , < , > , >= , == , !=, ), ",", ";" }
+Follow(arithmetic_expression_prime) -> {  "]", <= , < , > , >= , == , !=, ), ",", ";" }
+Follow(addop)  -> { "(", ID, NUM }
+Follow(term)  -> { + , -,  "]", <= , < , > , >= , == , !=, ), ",", ";"}
+Follow(term_prime) -> { + , -,  "]", <= , < , > , >= , == , !=, ), ",", ";"}
+Follow(mulop) -> { "(", ID, NUM }
+Follow(factor) -> { *, /, + , -, "]", <= , < , > , >= , == , !=, ), ",", ";" }
+Follow(factor_ID)  -> { *, /, + , -, "]", <= , < , > , >= , == , !=, ), "," ,  ";" }
+Follow(temp_factor) -> { *, /, + , -, "]", <= , < , > , >= , == , !=, ), ",", ";" }
+Follow(args)  -> { ")" }
+Follow(args_list)  -> { ")" }
+Follow(args_list_prime) -> { ")" }
