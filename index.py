@@ -50,7 +50,7 @@ def analizados_lexico():
     symbol_table_numbers = []
 
     # Path del archivo fuente para leer
-    f = open("program.txt", "r")
+    f = open("program_2.txt", "r")
     text = f.read()
     # Se le agrega un espacio al final del codigo para tener un ultimo delimitador
     text += " "
@@ -210,6 +210,8 @@ def analizados_lexico():
         data["message"] = "Commentario sin cerradura ----"
 
     if (data["status"] == 0):
+        # agregar symbolo de final de programa $
+        list_tokens.append({"tipo": "$", "value": None})
         # al terminar de forma correcta, se agregan las tablas y la lista  la variable data
         data["list_tokens"] = list_tokens
         data["list_identifiers"] = symbol_table_identifiers
@@ -218,13 +220,474 @@ def analizados_lexico():
     return data
 
 
+def analizados_sintactico(list_tokens):
+
+    global index
+    global current_token
+    index = 0
+    current_token = list_tokens[index]
+
+    def declaration_list():
+        if (current_token["tipo"] == "int"):
+            print("declaration_list  -  igual void")
+            match_tipo("int")
+            match_tipo("identifier")
+            declaration()
+            declaration_list_prime()
+
+        elif (current_token["tipo"] == "void"):
+            print("declaration_list  -  igual void")
+            match_tipo("void")
+            match_tipo("identifier")
+            match_value("(")
+            params_list()
+            match_value(")")
+            compound_stmt_void()
+            declaration_list_prime()
+
+        else:
+            print("-----ERROR_DECLARATION_LIST--------")
+            return
+
+    def declaration_list_prime():
+        if (current_token["tipo"] == "int"):
+            print("declaration_list_prime  -  igual int")
+            match_tipo("int")
+            match_tipo("identifier")
+            declaration()
+            declaration_list_prime()
+
+        elif (current_token["tipo"] == "void"):
+            print("declaration_list_prime  -  igual void")
+            match_tipo("void")
+            match_tipo("identifier")
+            match_value("(")
+            params_list()
+            match_value(")")
+            compound_stmt_void()
+            declaration_list_prime()
+
+        elif (current_token["tipo"] == "$"):
+            print("-----FIN_PROGRAMA--------")
+            return
+
+        else:
+            print("-----ERROR_DECLARATION_LIST_PRIME--------")
+            return
+
+    def declaration():
+        if (current_token["value"] == "("):
+            print("declaration  -  igual (")
+            match_value("(")
+            params_list()
+            match_value(")")
+            compound_stmt_int_return()
+        else:
+            var_array_declaration()
+            match_value(";")
+
+    def var_array_declaration():
+        if (current_token["value"] == "["):
+            print("var_array_declaration  -  igual [")
+            match_value("[")
+            match_tipo("number")
+            match_value("]")
+        elif (current_token["value"] == ";"):
+            return
+        else:
+            print("-----ERROR_VAR_ARRAY_DECLARATION--------")
+            return
+
+    def params_list():
+        if (current_token["tipo"] == "int"):
+            print("params_list  -  igual int")
+            match_tipo("int")
+            match_tipo("identifier")
+            param_array()
+            params_list_prime()
+        elif (current_token["tipo"] == "void"):
+            print("params_list  -  igual void")
+            match_tipo("void")
+        else:
+            print("-----ERROR_PARAMS_LIST--------")
+            return
+
+    def params_list_prime():
+        if (current_token["value"] == ","):
+            print("params_list_prime  -  igual ,")
+            match_value(",")
+            match_tipo("int")
+            match_tipo("identifier")
+            param_array()
+            params_list_prime()
+        elif (current_token["value"] == ")"):
+            return
+        else:
+            print("-----ERROR params_list_prime--------")
+            return
+
+    def param_array():
+        if (current_token["value"] == "["):
+            print("param_array  -  igual ,")
+            match_value("[")
+            match_value("]")
+        elif (current_token["value"] == "," or current_token["value"] == ")"):
+            return
+        else:
+            print("-----ERROR param_array--------")
+            return
+
+    def compound_stmt_void():
+        if (current_token["value"] == "{"):
+            print("compound_stmt_void  -  igual {")
+            match_value("{")
+            local_declarations()
+            statement_list_void()
+            match_value("}")
+        else:
+            print("-----ERROR compound_stmt_void--------")
+            return
+
+    def compound_stmt_int_return():
+        if (current_token["value"] == "{"):
+            print("compound_stmt_int_return  -  igual {")
+            match_value("{")
+            local_declarations()
+            statement_list_int()
+            return_stmt_int()
+            match_value("}")
+        else:
+            print("-----ERROR compound_stmt_int_return--------")
+            return
+
+    def compound_stmt_int_no_return():
+        if (current_token["value"] == "{"):
+            print("compound_stmt_int_no_return  -  igual {")
+            match_value("{")
+            local_declarations()
+            statement_list_int()
+            match_value("}")
+        else:
+            print("-----ERROR compound_stmt_int_no_return--------")
+            return
+
+    def local_declarations():
+        if (current_token["tipo"] == "int"):
+            print("local_declarations  -  igual int")
+            match_tipo("int")
+            match_tipo("identifier")
+            var_array_declaration()
+            match_value(";")
+            local_declarations()
+        elif (current_token["value"] == "{"
+              or current_token["value"] == "}"
+              or current_token["tipo"] == "int"
+              or current_token["tipo"] == "if"
+              or current_token["tipo"] == "while"
+              or current_token["tipo"] == "input"
+              or current_token["tipo"] == "output"
+              or current_token["tipo"] == "return"):
+            return
+        else:
+            print("-----ERROR local_declarations--------")
+            return
+
+    def statement_list_void():
+        if (current_token["value"] == "{"
+            or current_token["tipo"] == "identifier"
+            or current_token["tipo"] == "if"
+            or current_token["tipo"] == "while"
+            or current_token["tipo"] == "input"
+                or current_token["tipo"] == "output"):
+            print("statement_list_void")
+            statement_void()
+            statement_list_void()
+        elif (current_token["value"] == "}"):
+            return
+        else:
+            print("-----ERROR statement_list_void--------")
+            return
+
+    def statement_list_int():
+        if (current_token["value"] == "{"
+            or current_token["tipo"] == "identifier"
+            or current_token["tipo"] == "if"
+            or current_token["tipo"] == "while"
+            or current_token["tipo"] == "return"
+            or current_token["tipo"] == "input"
+                or current_token["tipo"] == "output"):
+            print("statement_list_int")
+            statement_int()
+            statement_list_int()
+        elif (current_token["value"] == "}"):
+            return
+        else:
+            print("-----ERROR statement_list_int--------")
+            return
+
+    def statement_void():
+        if (current_token["tipo"] == "identifier"):
+            print("statement_void  -  igual identifier")
+            assignment_call_stmt()
+        elif (current_token["value"] == "{"):
+            print("statement_void  -  igual {")
+            compound_stmt_void()
+        elif (current_token["tipo"] == "if"):
+            print("statement_void  -  igual if")
+            selection_stmt_void()
+        elif (current_token["tipo"] == "while"):
+            print("statement_void  -  igual while")
+            iteration_stmt_void()
+        elif (current_token["tipo"] == "input"):
+            print("statement_void  -  igual input")
+            input_stmt()
+        elif (current_token["tipo"] == "output"):
+            print("statement_void  -  igual output")
+            output_stmt()
+        else:
+            print("-----ERROR statement_void--------")
+            return
+
+    def statement_int():
+        if (current_token["tipo"] == "identifier"):
+            print("statement_int  -  igual identifier")
+            assignment_call_stmt()
+        elif (current_token["value"] == "{"):
+            print("statement_int  -  igual {")
+            compound_stmt_int_no_return()
+        elif (current_token["tipo"] == "if"):
+            print("statement_int  -  igual if")
+            selection_stmt_int()
+        elif (current_token["tipo"] == "while"):
+            print("statement_int  -  igual while")
+            iteration_stmt_int()
+        elif (current_token["tipo"] == "return"):
+            print("statement_int  -  igual while")
+            return_stmt_int()
+        elif (current_token["tipo"] == "input"):
+            print("statement_int  -  igual input")
+            input_stmt()
+        elif (current_token["tipo"] == "output"):
+            print("statement_int  -  igual output")
+            output_stmt()
+        else:
+            print("-----ERROR statement_int--------")
+            return
+
+    def assignment_call_stmt():
+        if (current_token["tipo"] == "identifier"):
+            print("assignment_call_stmt  -  igual identifier")
+            match_tipo("identifier")
+            assignment_call_stmt_factor()
+            match_value(";")
+        else:
+            print("-----ERROR assignment_call_stmt--------")
+            return
+
+    def assignment_call_stmt_factor():
+        if (current_token["value"] == "("):
+            print("assignment_call_stmt  -  igual (")
+            match_value("(")
+            args()
+            match_value(")")
+        if (current_token["value"] == "[" or current_token["value"] == "="):
+            var_array()
+            match_value("=")
+            expression()
+        else:
+            print("-----ERROR assignment_call_stmt_factor--------")
+            return
+
+    def selection_stmt_void():
+        if (current_token["tipo"] == "if"):
+            print("selection_stmt_void  -  igual if")
+            match_tipo("if")
+            match_value("(")
+            expression()
+            match_value(")")
+            statement_void()
+            selection_stmt_void_else()
+        else:
+            print("-----ERROR selection_stmt_void--------")
+            return
+
+    def selection_stmt_void_else():
+        if (current_token["tipo"] == "else"):
+            print("selection_stmt_void_else  -  igual else")
+            match_tipo("else")
+            statement_void()
+        elif (current_token["value"] == "{"
+              or current_token["value"] == "}"
+              or current_token["value"] == "identifier"
+              or current_token["value"] == "if"
+              or current_token["value"] == "while"
+              or current_token["value"] == "input"
+              or current_token["value"] == "output"):
+            return
+        else:
+            print("-----ERROR selection_stmt_void_else--------")
+            return
+
+    def selection_stmt_int():
+        if (current_token["tipo"] == "if"):
+            print("selection_stmt_int  -  igual if")
+            match_tipo("if")
+            match_value("(")
+            expression()
+            match_value(")")
+            statement_int()
+            selection_stmt_int_else()
+        else:
+            print("-----ERROR selection_stmt_int--------")
+            return
+
+    def selection_stmt_int_else():
+        if (current_token["tipo"] == "else"):
+            print("selection_stmt_int_else  -  igual else")
+            match_tipo("else")
+            statement_int()
+        elif (current_token["value"] == "{"
+              or current_token["value"] == "}"
+              or current_token["value"] == "identifier"
+              or current_token["value"] == "if"
+              or current_token["value"] == "while"
+              or current_token["value"] == "return"
+              or current_token["value"] == "input"
+              or current_token["value"] == "output"):
+            return
+        else:
+            print("-----ERROR selection_stmt_int_else--------")
+            return
+
+    def iteration_stmt_void():
+        if (current_token["tipo"] == "while"):
+            print("iteration_stmt_void  -  igual while")
+            match_tipo("while")
+            match_value("(")
+            expression()
+            match_value(")")
+            statement_void()
+        else:
+            print("-----ERROR iteration_stmt_void--------")
+            return
+
+    def iteration_stmt_int():
+        if (current_token["tipo"] == "while"):
+            print("iteration_stmt_int  -  igual while")
+            match_tipo("while")
+            match_value("(")
+            expression()
+            match_value(")")
+            statement_int()
+        else:
+            print("-----ERROR iteration_stmt_int--------")
+            return
+
+    def return_stmt_int():
+        if (current_token["tipo"] == "return"):
+            print("return_stmt_int  -  igual return")
+            match_tipo("return")
+            return_stmt_int_exp()
+            match_value(";")
+        else:
+            print("-----ERROR return_stmt_int--------")
+            return
+
+    def return_stmt_int_exp():
+        print("second")
+
+    def input_stmt():
+        print("start")
+
+    def output_stmt():
+        print("first")
+
+    def var_array():
+        print("second")
+
+    def expression():
+        print("start")
+
+    def expression_factor():
+        print("first")
+
+    def relop():
+        print("second")
+
+    def arithmetic_expression():
+        print("start")
+
+    def arithmetic_expression_prime():
+        print("first")
+
+    def addop():
+        print("second")
+
+    def term():
+        print("second")
+
+    def term_prime():
+        print("start")
+
+    def mulop():
+        print("first")
+
+    def factor():
+        print("second")
+
+    def factor_ID():
+        print("start")
+
+    def factor_factor():
+        print("first")
+
+    def args():
+        print("second")
+
+    def args_list():
+        print("start")
+
+    def match_tipo(terminal):
+        if (current_token["tipo"] == terminal):
+            print("igual_tipo: Terminal - ", terminal,
+                  ", Current_token - ", current_token["tipo"])
+            get_next_token()
+        else:
+            print("diferentes_tipo: Terminal - ", terminal,
+                  ", Current_token - ", current_token["value"])
+            print("---------ERROR-TIPO---------")
+
+    def match_value(terminal):
+        if (current_token["value"] == terminal):
+            print("igual_ symbol: Terminal - ", terminal,
+                  ", Current_token - ", current_token["value"])
+            get_next_token()
+        else:
+            print("diferentes_symbol: Terminal - ", terminal,
+                  ", Current_token - ", current_token["value"])
+            print("-------ERROR-SYMBOL---------")
+
+    def get_next_token():
+        global index
+        global current_token
+        index = index + 1
+        current_token = list_tokens[index]
+
+    def program():
+        declaration_list()
+
+    program()
+
+
 if __name__ == '__main__':
+
     data = analizados_lexico()
     if data["status"] == 0:
+        analizados_sintactico(data["list_tokens"])
+        # print("\n")
+        # print("STATUS - ", data["status"])
         print("\n")
-        print("STATUS - ", data["status"])
-        print("\n")
-        print("Message - ", data["message"])
+        # print("Message - ", data["message"])
         print("\n")
         print("LISTA DE TOKENS")
         for element in data["list_tokens"]:
