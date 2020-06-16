@@ -229,7 +229,7 @@ def analizados_sintactico(list_tokens):
 
     def declaration_list():
         if (current_token["tipo"] == "int"):
-            print("declaration_list  -  igual void")
+            print("declaration_list  -  igual int")
             match_tipo("int")
             match_tipo("identifier")
             declaration()
@@ -381,7 +381,7 @@ def analizados_sintactico(list_tokens):
             local_declarations()
         elif (current_token["value"] == "{"
               or current_token["value"] == "}"
-              or current_token["tipo"] == "int"
+              or current_token["tipo"] == "identifier"
               or current_token["tipo"] == "if"
               or current_token["tipo"] == "while"
               or current_token["tipo"] == "input"
@@ -413,13 +413,15 @@ def analizados_sintactico(list_tokens):
             or current_token["tipo"] == "identifier"
             or current_token["tipo"] == "if"
             or current_token["tipo"] == "while"
-            or current_token["tipo"] == "return"
+            # or current_token["tipo"] == "return"
             or current_token["tipo"] == "input"
                 or current_token["tipo"] == "output"):
             print("statement_list_int")
             statement_int()
+            print("regresa statement_list_int")
             statement_list_int()
-        elif (current_token["value"] == "}"):
+        elif (current_token["tipo"] == "return"):
+            print("sale de statement_list_int")
             return
         else:
             print("-----ERROR statement_list_int--------")
@@ -461,9 +463,10 @@ def analizados_sintactico(list_tokens):
         elif (current_token["tipo"] == "while"):
             print("statement_int  -  igual while")
             iteration_stmt_int()
-        elif (current_token["tipo"] == "return"):
-            print("statement_int  -  igual while")
-            return_stmt_int()
+        # elif (current_token["tipo"] == "return"):
+        #     print("statement_int  -  igual return")
+        #     return_stmt_int()
+        #     print("regresa statement_int")
         elif (current_token["tipo"] == "input"):
             print("statement_int  -  igual input")
             input_stmt()
@@ -486,15 +489,16 @@ def analizados_sintactico(list_tokens):
 
     def assignment_call_stmt_factor():
         if (current_token["value"] == "("):
-            print("assignment_call_stmt  -  igual (")
+            print("assignment_call_stmt_factor  -  igual (")
             match_value("(")
             args()
             match_value(")")
-        if (current_token["value"] == "[" or current_token["value"] == "="):
+        elif (current_token["value"] == "[" or current_token["value"] == "="):
             var_array()
             match_value("=")
             expression()
         else:
+            print(current_token)
             print("-----ERROR assignment_call_stmt_factor--------")
             return
 
@@ -594,58 +598,229 @@ def analizados_sintactico(list_tokens):
             return
 
     def return_stmt_int_exp():
-        print("second")
+        if (current_token["value"] == "("
+                or current_token["tipo"] == "number"
+                or current_token["tipo"] == "identifier"):
+            expression()
+
+        elif (current_token["value"] == ";"):
+            return
+        else:
+            print("-----ERROR return_stmt_int_exp--------")
+            return
 
     def input_stmt():
-        print("start")
+        if (current_token["tipo"] == "input"):
+            print("input_stmt  -  igual input")
+            match_tipo("input")
+            match_tipo("identifier")
+            var_array()
+            match_value(";")
+        else:
+            print("-----ERROR input_stmt--------")
+            return
 
     def output_stmt():
-        print("first")
+        if (current_token["tipo"] == "output"):
+            print("output_stmt  -  igual ouput")
+            match_tipo("output")
+            expression()
+            match_value(";")
+        else:
+            print("-----ERROR output_stmt--------")
+            return
 
     def var_array():
-        print("second")
+        if (current_token["value"] == "["):
+            print("var_array  -  igual [")
+            match_value("[")
+            arithmetic_expression()
+            match_value("]")
+        elif (current_token["value"] == "="
+                or current_token["value"] == ";"
+                or current_token["value"] == "<="
+                or current_token["value"] == "<"
+                or current_token["value"] == ">="
+                or current_token["value"] == ">"
+                or current_token["value"] == "=="
+                or current_token["value"] == "!="
+                or current_token["value"] == "]"
+                or current_token["value"] == "+"
+                or current_token["value"] == "-"
+                or current_token["value"] == "/"
+                or current_token["value"] == "*"
+                or current_token["value"] == ","):
+            return
+        else:
+            print("-----ERROR var_array--------")
+            return
 
     def expression():
-        print("start")
+        arithmetic_expression()
+        expression_factor()
 
     def expression_factor():
-        print("first")
+        if (current_token["value"] == "<="
+                or current_token["value"] == "<"
+                or current_token["value"] == ">="
+                or current_token["value"] == ">"
+                or current_token["value"] == "=="
+                or current_token["value"] == "!="):
+            relop()
+            arithmetic_expression()
+        elif (current_token["value"] == ";" or current_token["value"] == ")"):
+            return
+        else:
+            print("-----ERROR expression_factor--------")
+            return
 
     def relop():
-        print("second")
+        if (current_token["value"] == "<="):
+            print("relop  -  igual <=")
+            match_value("<=")
+        elif (current_token["value"] == "<"):
+            print("relop  -  igual <")
+            match_value("<")
+        elif (current_token["value"] == ">="):
+            print("relop  -  igual >=")
+            match_value(">=")
+        elif (current_token["value"] == ">"):
+            print("relop  -  igual >")
+            match_value(">")
+        elif (current_token["value"] == "=="):
+            print("relop  -  igual ==")
+            match_value("==")
+        elif (current_token["value"] == "!="):
+            print("relop  -  igual !=")
+            match_value("!=")
+        else:
+            print("-----ERROR relop--------")
+            return
 
     def arithmetic_expression():
-        print("start")
+        term()
+        arithmetic_expression_prime()
 
     def arithmetic_expression_prime():
-        print("first")
+        if (current_token["value"] == "+" or current_token["value"] == "-"):
+            print("arithmetic_expression_prime  -  igual + o -")
+            addop()
+            term()
+            arithmetic_expression_prime()
+        elif (current_token["value"] == "]"
+              or current_token["value"] == "<="
+              or current_token["value"] == "<"
+              or current_token["value"] == ">="
+              or current_token["value"] == ">"
+              or current_token["value"] == "=="
+              or current_token["value"] == "!="
+              or current_token["value"] == ";"
+              or current_token["value"] == ")"
+              or current_token["value"] == ","):
+            return
+        else:
+            print("-----ERROR arithmetic_expression_prime--------")
+            return
 
     def addop():
-        print("second")
+        if (current_token["value"] == "+"):
+            print("addop  -  igual +")
+            match_value("+")
+        elif (current_token["value"] == "-"):
+            print("addop -  igual -")
+            match_value("-")
+        else:
+            print("-----ERROR addop--------")
+            return
 
     def term():
-        print("second")
+        factor()
+        term_prime()
 
     def term_prime():
-        print("start")
+        if (current_token["value"] == "*" or current_token["value"] == "/"):
+            print("term_prime ")
+            mulop()
+            factor()
+            term_prime()
+        elif (current_token["value"] == "+"
+              or current_token["value"] == "-"
+              or current_token["value"] == "]"
+              or current_token["value"] == "<="
+              or current_token["value"] == "<"
+              or current_token["value"] == ">="
+              or current_token["value"] == ">"
+              or current_token["value"] == "=="
+              or current_token["value"] == "!="
+              or current_token["value"] == ";"
+              or current_token["value"] == ")"
+              or current_token["value"] == ","):
+            return
+        else:
+            print("-----ERROR term_prime--------")
+            return
 
     def mulop():
-        print("first")
+        if (current_token["value"] == "*"):
+            print("mulop  -  igual *")
+            match_value("*")
+        elif (current_token["value"] == "/"):
+            print("mulop -  igual /")
+            match_value("/")
+        else:
+            print("-----ERROR mulop--------")
+            return
 
     def factor():
-        print("second")
+        if (current_token["value"] == "("):
+            print("factor  -  igual (")
+            match_value("(")
+            arithmetic_expression()
+            match_value(")")
+        elif (current_token["tipo"] == "number"):
+            print("factor -  igual number")
+            match_tipo("number")
+        elif (current_token["tipo"] == "identifier"):
+            factor_ID()
+        else:
+            print("-----ERROR factor--------")
+            return
 
     def factor_ID():
-        print("start")
+        if (current_token["tipo"] == "identifier"):
+            print("factor_ID -  igual identifier")
+            match_tipo("identifier")
+            factor_factor()
+        else:
+            print("-----ERROR factor_ID--------")
+            return
 
     def factor_factor():
-        print("first")
+        if (current_token["value"] == "("):
+            print("factor_factor  -  igual (")
+            match_value("(")
+            args()
+            match_value(")")
+        else:
+            var_array()
 
     def args():
-        print("second")
+        if (current_token["value"] == "("
+                or current_token["tipo"] == "number"
+                or current_token["tipo"] == "identifier"):
+            arithmetic_expression()
+            args_list()
+        elif (current_token["value"] == ")"):
+            return
 
     def args_list():
-        print("start")
+        if (current_token["value"] == ","):
+            match_value(",")
+            arithmetic_expression()
+            args_list()
+        elif (current_token["value"] == ")"):
+
+            return
 
     def match_tipo(terminal):
         if (current_token["tipo"] == terminal):
@@ -686,21 +861,21 @@ if __name__ == '__main__':
         analizados_sintactico(data["list_tokens"])
         # print("\n")
         # print("STATUS - ", data["status"])
-        print("\n")
+        # print("\n")
         # print("Message - ", data["message"])
-        print("\n")
-        print("LISTA DE TOKENS")
-        for element in data["list_tokens"]:
-            print(element)
-        print("\n")
-        print("LISTA DE IDENTIFICADORES")
-        for element in data["list_identifiers"]:
-            print(element)
-        print("\n")
-        print("LISTA DE NUMEROS")
-        for element in data["list_numbers"]:
-            print(element)
-        print("\n")
+        # print("\n")
+        # print("LISTA DE TOKENS")
+        # for element in data["list_tokens"]:
+        #     print(element)
+        # print("\n")
+        # print("LISTA DE IDENTIFICADORES")
+        # for element in data["list_identifiers"]:
+        #     print(element)
+        # print("\n")
+        # print("LISTA DE NUMEROS")
+        # for element in data["list_numbers"]:
+        #     print(element)
+        # print("\n")
     else:
         print("\n")
         print("Status - ", data["status"])
