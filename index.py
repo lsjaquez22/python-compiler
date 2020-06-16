@@ -50,7 +50,7 @@ def analizados_lexico():
     symbol_table_numbers = []
 
     # Path del archivo fuente para leer
-    f = open("program_3.txt", "r")
+    f = open("program_4.txt", "r")
     text = f.read()
     # Se le agrega un espacio al final del codigo para tener un ultimo delimitador
     text += " "
@@ -897,9 +897,12 @@ def analizados_sintactico(list_tokens):
         global error_message
         global index
         global current_token
-        if(error == 0):
+        if (error == 0):
             error = 1
-            error_message = "Token Invalido = " + current_token["tipo"]
+            error_message = "Secuencia Tokens Invalida = " + \
+                list_tokens[index-1]["tipo"] + " - " + \
+                current_token["tipo"] + " - " + \
+                list_tokens[index+1]["tipo"]
 
     def get_error_invalid_token(terminal):
         global error
@@ -908,10 +911,20 @@ def analizados_sintactico(list_tokens):
         global current_token
         if(error == 0):
             error = 1
-            error_message = "Token Invalido = " + \
-                current_token["tipo"] + " / " + "Token Esperado = " + terminal
+            if(current_token["tipo"] != "symbol"):
+                error_message = "Token Invalido = " + \
+                    current_token["tipo"] + " / " + \
+                    "Token Esperado = " + terminal
+            else:
+                error_message = "Token Invalido = " + \
+                    current_token["value"] + " / " + \
+                    "Token Esperado = " + terminal
 
     def process_result():
+        print("\n")
+        print("\n")
+        print("\n")
+        print("\n")
         if (error == 1):
             print("Error - ", error_message)
         else:
