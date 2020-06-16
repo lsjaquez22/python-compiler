@@ -12,7 +12,7 @@ local_declarations ->  int ID var_array_declaration ; local_declarations | ε
 statement_list_void ->  statement_void statement_list_void | ε
 statement_list_int ->  statement_int statement_list_int | ε
 statement_void -> assignment_call_stmt | compound_stmt_void | selection_stmt_void | iteration_stmt_void | input_stmt | output_stmt
-statement_int -> assignment_call_stmt | compound_stmt_int_no_return | selection_stmt_int | iteration_stmt_int | return_stmt_int | input_stmt | output_stmt
+statement_int -> assignment_call_stmt | compound_stmt_int_no_return | selection_stmt_int | iteration_stmt_int | input_stmt | output_stmt
 assignment_call_stmt -> ID assignment_call_stmt_factor ;
 assignment_call_stmt_factor -> var_array = expression  | ( args )
 selection_stmt_void -> if  ( expression )  statement_void  selection_stmt_void_else

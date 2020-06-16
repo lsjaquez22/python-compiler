@@ -899,10 +899,17 @@ def analizados_sintactico(list_tokens):
         global current_token
         if (error == 0):
             error = 1
-            error_message = "Secuencia Tokens Invalida = " + \
-                list_tokens[index-1]["tipo"] + " - " + \
-                current_token["tipo"] + " - " + \
-                list_tokens[index+1]["tipo"]
+            if(current_token["tipo"] != "symbol"):
+                error_message = "Secuencia Tokens Invalida = " + \
+                    list_tokens[index-1]["tipo"] + " - " + \
+                    current_token["tipo"] + " - " + \
+                    list_tokens[index+1]["tipo"]
+
+            else:
+                error_message = "Secuencia Tokens Invalida = " + \
+                    list_tokens[index-1]["tipo"] + " - " + \
+                    current_token["value"] + " - " + \
+                    list_tokens[index+1]["tipo"]
 
     def get_error_invalid_token(terminal):
         global error
@@ -926,7 +933,7 @@ def analizados_sintactico(list_tokens):
         print("\n")
         print("\n")
         if (error == 1):
-            print("Error - ", error_message)
+            print("Error:   ", error_message)
         else:
             print("Sintaxis Correcta")
 
