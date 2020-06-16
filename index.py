@@ -50,7 +50,7 @@ def analizados_lexico():
     symbol_table_numbers = []
 
     # Path del archivo fuente para leer
-    f = open("program_2.txt", "r")
+    f = open("program_3.txt", "r")
     text = f.read()
     # Se le agrega un espacio al final del codigo para tener un ultimo delimitador
     text += " "
@@ -224,8 +224,12 @@ def analizados_sintactico(list_tokens):
 
     global index
     global current_token
+    global error
+    global error_message
     index = 0
     current_token = list_tokens[index]
+    error = 0
+    error_message = ""
 
     def declaration_list():
         if (current_token["tipo"] == "int"):
@@ -247,6 +251,7 @@ def analizados_sintactico(list_tokens):
 
         else:
             print("-----ERROR_DECLARATION_LIST--------")
+            get_error()
             return
 
     def declaration_list_prime():
@@ -273,6 +278,8 @@ def analizados_sintactico(list_tokens):
 
         else:
             print("-----ERROR_DECLARATION_LIST_PRIME--------")
+            global error
+            get_error()
             return
 
     def declaration():
@@ -296,6 +303,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR_VAR_ARRAY_DECLARATION--------")
+            get_error()
             return
 
     def params_list():
@@ -310,6 +318,7 @@ def analizados_sintactico(list_tokens):
             match_tipo("void")
         else:
             print("-----ERROR_PARAMS_LIST--------")
+            get_error()
             return
 
     def params_list_prime():
@@ -324,6 +333,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR params_list_prime--------")
+            get_error()
             return
 
     def param_array():
@@ -335,6 +345,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR param_array--------")
+            get_error()
             return
 
     def compound_stmt_void():
@@ -346,6 +357,7 @@ def analizados_sintactico(list_tokens):
             match_value("}")
         else:
             print("-----ERROR compound_stmt_void--------")
+            get_error()
             return
 
     def compound_stmt_int_return():
@@ -358,6 +370,7 @@ def analizados_sintactico(list_tokens):
             match_value("}")
         else:
             print("-----ERROR compound_stmt_int_return--------")
+            get_error()
             return
 
     def compound_stmt_int_no_return():
@@ -369,6 +382,7 @@ def analizados_sintactico(list_tokens):
             match_value("}")
         else:
             print("-----ERROR compound_stmt_int_no_return--------")
+            get_error()
             return
 
     def local_declarations():
@@ -390,6 +404,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR local_declarations--------")
+            get_error()
             return
 
     def statement_list_void():
@@ -406,6 +421,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR statement_list_void--------")
+            get_error()
             return
 
     def statement_list_int():
@@ -418,13 +434,13 @@ def analizados_sintactico(list_tokens):
                 or current_token["tipo"] == "output"):
             print("statement_list_int")
             statement_int()
-            print("regresa statement_list_int")
             statement_list_int()
-        elif (current_token["tipo"] == "return"):
+        elif (current_token["tipo"] == "return" or current_token["value"] == "}"):
             print("sale de statement_list_int")
             return
         else:
             print("-----ERROR statement_list_int--------")
+            get_error()
             return
 
     def statement_void():
@@ -448,6 +464,7 @@ def analizados_sintactico(list_tokens):
             output_stmt()
         else:
             print("-----ERROR statement_void--------")
+            get_error()
             return
 
     def statement_int():
@@ -475,6 +492,7 @@ def analizados_sintactico(list_tokens):
             output_stmt()
         else:
             print("-----ERROR statement_int--------")
+            get_error()
             return
 
     def assignment_call_stmt():
@@ -485,6 +503,7 @@ def analizados_sintactico(list_tokens):
             match_value(";")
         else:
             print("-----ERROR assignment_call_stmt--------")
+            get_error()
             return
 
     def assignment_call_stmt_factor():
@@ -500,6 +519,7 @@ def analizados_sintactico(list_tokens):
         else:
             print(current_token)
             print("-----ERROR assignment_call_stmt_factor--------")
+            get_error()
             return
 
     def selection_stmt_void():
@@ -513,6 +533,7 @@ def analizados_sintactico(list_tokens):
             selection_stmt_void_else()
         else:
             print("-----ERROR selection_stmt_void--------")
+            get_error()
             return
 
     def selection_stmt_void_else():
@@ -522,14 +543,15 @@ def analizados_sintactico(list_tokens):
             statement_void()
         elif (current_token["value"] == "{"
               or current_token["value"] == "}"
-              or current_token["value"] == "identifier"
-              or current_token["value"] == "if"
-              or current_token["value"] == "while"
-              or current_token["value"] == "input"
-              or current_token["value"] == "output"):
+              or current_token["tipo"] == "identifier"
+              or current_token["tipo"] == "if"
+              or current_token["tipo"] == "while"
+              or current_token["tipo"] == "input"
+              or current_token["tipo"] == "output"):
             return
         else:
             print("-----ERROR selection_stmt_void_else--------")
+            get_error()
             return
 
     def selection_stmt_int():
@@ -543,6 +565,7 @@ def analizados_sintactico(list_tokens):
             selection_stmt_int_else()
         else:
             print("-----ERROR selection_stmt_int--------")
+            get_error()
             return
 
     def selection_stmt_int_else():
@@ -552,15 +575,17 @@ def analizados_sintactico(list_tokens):
             statement_int()
         elif (current_token["value"] == "{"
               or current_token["value"] == "}"
-              or current_token["value"] == "identifier"
-              or current_token["value"] == "if"
-              or current_token["value"] == "while"
-              or current_token["value"] == "return"
-              or current_token["value"] == "input"
-              or current_token["value"] == "output"):
+              or current_token["tipo"] == "identifier"
+              or current_token["tipo"] == "if"
+              or current_token["tipo"] == "while"
+              or current_token["tipo"] == "return"
+              or current_token["tipo"] == "input"
+              or current_token["tipo"] == "output"):
             return
         else:
+            print(current_token)
             print("-----ERROR selection_stmt_int_else--------")
+            get_error()
             return
 
     def iteration_stmt_void():
@@ -573,6 +598,7 @@ def analizados_sintactico(list_tokens):
             statement_void()
         else:
             print("-----ERROR iteration_stmt_void--------")
+            get_error()
             return
 
     def iteration_stmt_int():
@@ -585,6 +611,7 @@ def analizados_sintactico(list_tokens):
             statement_int()
         else:
             print("-----ERROR iteration_stmt_int--------")
+            get_error()
             return
 
     def return_stmt_int():
@@ -595,6 +622,7 @@ def analizados_sintactico(list_tokens):
             match_value(";")
         else:
             print("-----ERROR return_stmt_int--------")
+            get_error()
             return
 
     def return_stmt_int_exp():
@@ -607,6 +635,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR return_stmt_int_exp--------")
+            get_error()
             return
 
     def input_stmt():
@@ -618,6 +647,7 @@ def analizados_sintactico(list_tokens):
             match_value(";")
         else:
             print("-----ERROR input_stmt--------")
+            get_error()
             return
 
     def output_stmt():
@@ -628,6 +658,7 @@ def analizados_sintactico(list_tokens):
             match_value(";")
         else:
             print("-----ERROR output_stmt--------")
+            get_error()
             return
 
     def var_array():
@@ -649,10 +680,12 @@ def analizados_sintactico(list_tokens):
                 or current_token["value"] == "-"
                 or current_token["value"] == "/"
                 or current_token["value"] == "*"
-                or current_token["value"] == ","):
+                or current_token["value"] == ","
+                or current_token["value"] == ")"):
             return
         else:
             print("-----ERROR var_array--------")
+            get_error()
             return
 
     def expression():
@@ -672,6 +705,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR expression_factor--------")
+            get_error()
             return
 
     def relop():
@@ -695,6 +729,7 @@ def analizados_sintactico(list_tokens):
             match_value("!=")
         else:
             print("-----ERROR relop--------")
+            get_error()
             return
 
     def arithmetic_expression():
@@ -720,6 +755,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR arithmetic_expression_prime--------")
+            get_error()
             return
 
     def addop():
@@ -731,6 +767,7 @@ def analizados_sintactico(list_tokens):
             match_value("-")
         else:
             print("-----ERROR addop--------")
+            get_error()
             return
 
     def term():
@@ -758,6 +795,7 @@ def analizados_sintactico(list_tokens):
             return
         else:
             print("-----ERROR term_prime--------")
+            get_error()
             return
 
     def mulop():
@@ -769,6 +807,7 @@ def analizados_sintactico(list_tokens):
             match_value("/")
         else:
             print("-----ERROR mulop--------")
+            get_error()
             return
 
     def factor():
@@ -784,6 +823,7 @@ def analizados_sintactico(list_tokens):
             factor_ID()
         else:
             print("-----ERROR factor--------")
+            get_error()
             return
 
     def factor_ID():
@@ -793,6 +833,7 @@ def analizados_sintactico(list_tokens):
             factor_factor()
         else:
             print("-----ERROR factor_ID--------")
+            get_error()
             return
 
     def factor_factor():
@@ -819,7 +860,6 @@ def analizados_sintactico(list_tokens):
             arithmetic_expression()
             args_list()
         elif (current_token["value"] == ")"):
-
             return
 
     def match_tipo(terminal):
@@ -831,6 +871,8 @@ def analizados_sintactico(list_tokens):
             print("diferentes_tipo: Terminal - ", terminal,
                   ", Current_token - ", current_token["value"])
             print("---------ERROR-TIPO---------")
+            get_error_invalid_token(terminal)
+            get_error()
 
     def match_value(terminal):
         if (current_token["value"] == terminal):
@@ -841,6 +883,8 @@ def analizados_sintactico(list_tokens):
             print("diferentes_symbol: Terminal - ", terminal,
                   ", Current_token - ", current_token["value"])
             print("-------ERROR-SYMBOL---------")
+            get_error_invalid_token(terminal)
+            get_error()
 
     def get_next_token():
         global index
@@ -848,10 +892,36 @@ def analizados_sintactico(list_tokens):
         index = index + 1
         current_token = list_tokens[index]
 
+    def get_error():
+        global error
+        global error_message
+        global index
+        global current_token
+        if(error == 0):
+            error = 1
+            error_message = "Token Invalido = " + current_token["tipo"]
+
+    def get_error_invalid_token(terminal):
+        global error
+        global error_message
+        global index
+        global current_token
+        if(error == 0):
+            error = 1
+            error_message = "Token Invalido = " + \
+                current_token["tipo"] + " / " + "Token Esperado = " + terminal
+
+    def process_result():
+        if (error == 1):
+            print("Error - ", error_message)
+        else:
+            print("Sintaxis Correcta")
+
     def program():
         declaration_list()
 
     program()
+    process_result()
 
 
 if __name__ == '__main__':
