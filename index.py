@@ -50,7 +50,7 @@ def analizados_lexico():
     symbol_table_numbers = []
 
     # Path del archivo fuente para leer
-    f = open("program_4.txt", "r")
+    f = open("program_5.txt", "r")
     text = f.read()
     # Se le agrega un espacio al final del codigo para tener un ultimo delimitador
     text += " "
@@ -949,23 +949,23 @@ if __name__ == '__main__':
     data = analizados_lexico()
     if data["status"] == 0:
         analizados_sintactico(data["list_tokens"])
-        # print("\n")
-        # print("STATUS - ", data["status"])
-        # print("\n")
-        # print("Message - ", data["message"])
-        # print("\n")
-        # print("LISTA DE TOKENS")
-        # for element in data["list_tokens"]:
-        #     print(element)
-        # print("\n")
-        # print("LISTA DE IDENTIFICADORES")
-        # for element in data["list_identifiers"]:
-        #     print(element)
-        # print("\n")
-        # print("LISTA DE NUMEROS")
-        # for element in data["list_numbers"]:
-        #     print(element)
-        # print("\n")
+        print("\n")
+        print("STATUS - ", data["status"])
+        print("\n")
+        print("Message - ", data["message"])
+        print("\n")
+        print("LISTA DE TOKENS")
+        for element in data["list_tokens"]:
+            print(element)
+        print("\n")
+        print("LISTA DE IDENTIFICADORES")
+        for element in data["list_identifiers"]:
+            print(element)
+        print("\n")
+        print("LISTA DE NUMEROS")
+        for element in data["list_numbers"]:
+            print(element)
+        print("\n")
     else:
         print("\n")
         print("Status - ", data["status"])
