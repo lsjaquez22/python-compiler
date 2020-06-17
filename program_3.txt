@@ -1,0 +1,9 @@
+int main(void){ 
+int i;
+i = 0;
+if (a[i] < x){
+x = a[i];
+k = i;
+}
+return ;
+}/* END of main() */
